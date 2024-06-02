@@ -8,22 +8,29 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.activity.ComponentActivity
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
+import java.util.Objects
 
 private const val TAG = "MainActivity"
 private const val INITIAL_TIP_PERCENT = 15
+
 class MainActivity : AppCompatActivity() {
-    private lateinit var etBaseAmount: EditText
-    private lateinit var seekBarTip: SeekBar
-    private lateinit var tvTipPercentLabel: TextView
-    private lateinit var tvTipAmount: TextView
-    private lateinit var tvTotalAmount: TextView
-    private lateinit var tvTipDescription: TextView
+    private lateinit var tvDexNumber: TextView
+    private lateinit var tvTypes: TextView
+    private lateinit var tvPokemonName: TextView
+    private lateinit var etPokemonName: EditText
+    private lateinit var url: String
+    private lateinit var queue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,76 +41,56 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        etBaseAmount = findViewById(R.id.etBaseAmount)
-        seekBarTip = findViewById(R.id.seekBarTip)
-        tvTipPercentLabel = findViewById(R.id.tvTipPercentLabel)
-        tvTipAmount = findViewById(R.id.tvTipAmount)
-        tvTotalAmount = findViewById(R.id.tvTotalAmount)
-        tvTipDescription = findViewById(R.id.tvTipDescription)
 
-        seekBarTip.progress = INITIAL_TIP_PERCENT
-        tvTipPercentLabel.text = "$INITIAL_TIP_PERCENT%"
-        updateTipDescription(seekBarTip.progress)
-        seekBarTip.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                tvTipPercentLabel.text = "$p1%"
-                computeTipAndTotal()
-                updateTipDescription(seekBarTip.progress)
-            }
+        tvDexNumber = findViewById(R.id.tvDexNumber)
+        tvTypes = findViewById(R.id.tvTypes)
+        tvPokemonName = findViewById(R.id.tvPokemonName)
+        etPokemonName = findViewById(R.id.etPokemonName)
+        url = "https://pokeapi.co/api/v2/pokemon/"
+        queue = Volley.newRequestQueue(this)
 
-            override fun onStartTrackingTouch(p0: SeekBar?) {
-            }
-            override fun onStopTrackingTouch(p0: SeekBar?) {
-            }
-        })
-
-        etBaseAmount.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+        etPokemonName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
-                computeTipAndTotal()
+                if(etPokemonName.text.isNotEmpty()){
+                    getPokemon(url + etPokemonName.text.toString() + "/")
+                }
             }
-
         })
     }
 
-    private fun computeTipAndTotal(){
-        if(etBaseAmount.text.isEmpty()){
-            tvTipAmount.text = ""
-            tvTotalAmount.text = ""
-            return
-        }
+    private fun getPokemon(url: String){
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
+            { response ->
+                updatePokemon(response)
+            },
+            { error ->
+                Log.i("pokemon", "onCreate: fail")
+                Toast.makeText(this, error.message, Toast.LENGTH_SHORT)
+            })
 
-        val baseAmount = etBaseAmount.text.toString().toDouble()
-        val tipPercent = seekBarTip.progress
-
-        val tipAmount = baseAmount * tipPercent / 100
-        val totalAmount = baseAmount + tipAmount
-
-        tvTipAmount.text = "%.2f".format(tipAmount)
-        tvTotalAmount.text = "%.2f".format(totalAmount)
+        this.queue.add(jsonObjectRequest)
     }
 
-    @SuppressLint("RestrictedApi")
-    private fun updateTipDescription(TipPercent: Int) {
-        val tipDescription = when(TipPercent) {
-            in 0..9 -> "Poor"
-            in 10..14 -> "Acceptable"
-            in 15..19 -> "Good"
-            in 20..24 -> "Great"
-            else -> "Amazing"
+    private fun updatePokemon(pokemon: JSONObject){
+        tvPokemonName.text = pokemon.getString("name")
+        tvDexNumber.text = "#".plus(pokemon.getInt("id").toString())
+        val typesArray = pokemon.getJSONArray("types")
+        val typesStringBuilder = StringBuilder()
+        var i = 0
+        while (i < typesArray.length()) {
+            val typeObject = typesArray.getJSONObject(i)
+            val typeName = typeObject.getJSONObject("type").getString("name")
+            typesStringBuilder.append(", $typeName")
+            i++
         }
-        tvTipDescription.text = tipDescription
-
-        val color = ArgbEvaluator().evaluate(
-            TipPercent.toFloat() / seekBarTip.max,
-            ContextCompat.getColor(this, R.color.color_worst_tip),
-            ContextCompat.getColor(this, R.color.color_best_tip)
-        ) as Int
-
-        tvTipDescription.setTextColor(color)
+        var types = if (typesStringBuilder.isNotEmpty()) {
+            typesStringBuilder.delete(0, 2).toString()
+        } else {
+            ""
+        }
+        tvTypes.text = types
     }
 }

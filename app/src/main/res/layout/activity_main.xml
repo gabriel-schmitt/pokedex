@@ -11,96 +11,68 @@
         android:id="@+id/tvBaseLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="40dp"
-        android:text="Base"
+        android:text="Pokémon:"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvTipPercentLabel"
+        android:id="@+id/tvDexNumberLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
+        android:text="Pokedex:"
         android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/tvBaseLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvBaseLabel"
-        tools:text="24%" />
+        app:layout_constraintEnd_toEndOf="@+id/tvBaseLabel"
+        app:layout_constraintTop_toBottomOf="@+id/tvPokemonName" />
 
     <TextView
-        android:id="@+id/tvTipLabel"
+        android:id="@+id/tvTypesLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="56dp"
-        android:text="Tip"
+        android:layout_marginTop="32dp"
+        android:text="Tipos:"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@id/tvBaseLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTipPercentLabel" />
+        app:layout_constraintEnd_toEndOf="@+id/tvBaseLabel"
+        app:layout_constraintTop_toBottomOf="@+id/tvDexNumberLabel" />
 
     <TextView
-        android:id="@+id/tvTotalLabel"
+        android:id="@+id/tvDexNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="40dp"
-        android:text="Total"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@id/tvBaseLabel"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDexNumberLabel"
+        app:layout_constraintStart_toStartOf="@+id/etPokemonName" />
+
+    <TextView
+        android:id="@+id/tvTypes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTypesLabel"
+        app:layout_constraintStart_toStartOf="@+id/etPokemonName" />
+
+    <TextView
+        android:id="@+id/tvPokemonName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTipLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/tvBaseLabel" />
 
     <EditText
-        android:id="@+id/etBaseAmount"
+        android:id="@+id/etPokemonName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:ems="8"
-        android:inputType="numberDecimal"
-        android:textSize="24sp"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:inputType="text"
         app:layout_constraintBottom_toBottomOf="@+id/tvBaseLabel"
-        app:layout_constraintStart_toEndOf="@+id/tvBaseLabel" />
+        app:layout_constraintStart_toEndOf="@+id/tvBaseLabel"
+        app:layout_constraintTop_toTopOf="@+id/tvBaseLabel" />
 
-    <SeekBar
-        android:id="@+id/seekBarTip"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:max="30"
-        app:layout_constraintBottom_toBottomOf="@+id/tvTipPercentLabel"
-        app:layout_constraintStart_toStartOf="@+id/etBaseAmount"
-        app:layout_constraintTop_toTopOf="@+id/tvTipPercentLabel" />
-
-    <TextView
-        android:id="@+id/tvTipAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvTipLabel"
-        app:layout_constraintStart_toStartOf="@+id/seekBarTip"
-        tools:text="3.1415" />
-
-    <TextView
-        android:id="@+id/tvTotalAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvTotalLabel"
-        app:layout_constraintStart_toStartOf="@+id/tvTipAmount"
-        tools:text="100" />
-
-    <TextView
-        android:id="@+id/tvTipDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="TextView"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/seekBarTip"
-        app:layout_constraintStart_toStartOf="@+id/seekBarTip"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarTip" />
 </androidx.constraintlayout.widget.ConstraintLayout>
