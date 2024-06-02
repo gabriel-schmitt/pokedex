@@ -1,40 +1,16 @@
 package com.example.pokedex
 
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.widget.EditText
-import android.widget.SeekBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
-import org.json.JSONObject
-import java.util.Objects
-
-private const val TAG = "MainActivity"
-private const val INITIAL_TIP_PERCENT = 15
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var tvDexNumber: TextView
-    private lateinit var tvTypes: TextView
-    private lateinit var tvPokemonName: TextView
-    private lateinit var etPokemonName: EditText
-    private lateinit var url: String
-    private lateinit var queue: RequestQueue
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -42,55 +18,10 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        tvDexNumber = findViewById(R.id.tvDexNumber)
-        tvTypes = findViewById(R.id.tvTypes)
-        tvPokemonName = findViewById(R.id.tvPokemonName)
-        etPokemonName = findViewById(R.id.etPokemonName)
-        url = "https://pokeapi.co/api/v2/pokemon/"
-        queue = Volley.newRequestQueue(this)
-
-        etPokemonName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(p0: Editable?) {
-                if(etPokemonName.text.isNotEmpty()){
-                    getPokemon(url + etPokemonName.text.toString() + "/")
-                }
-            }
-        })
-    }
-
-    private fun getPokemon(url: String){
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url, null,
-            { response ->
-                updatePokemon(response)
-            },
-            { error ->
-                Log.i("pokemon", "onCreate: fail")
-                Toast.makeText(this, error.message, Toast.LENGTH_SHORT)
-            })
-
-        this.queue.add(jsonObjectRequest)
-    }
-
-    private fun updatePokemon(pokemon: JSONObject){
-        tvPokemonName.text = pokemon.getString("name")
-        tvDexNumber.text = "#".plus(pokemon.getInt("id").toString())
-        val typesArray = pokemon.getJSONArray("types")
-        val typesStringBuilder = StringBuilder()
-        var i = 0
-        while (i < typesArray.length()) {
-            val typeObject = typesArray.getJSONObject(i)
-            val typeName = typeObject.getJSONObject("type").getString("name")
-            typesStringBuilder.append(", $typeName")
-            i++
+        val button = findViewById<Button>(R.id.button)
+        button.setOnClickListener{
+            val intent = Intent(this, PokedexActivity::class.java)
+            startActivity(intent)
         }
-        var types = if (typesStringBuilder.isNotEmpty()) {
-            typesStringBuilder.delete(0, 2).toString()
-        } else {
-            ""
-        }
-        tvTypes.text = types
     }
 }
