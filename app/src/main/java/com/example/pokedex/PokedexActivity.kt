@@ -1,8 +1,11 @@
 package com.example.pokedex
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -14,7 +17,9 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
+import java.util.Objects.isNull
 
+const val LAST_POKEMON_ID = 1025
 class PokedexActivity : AppCompatActivity() {
 
     private lateinit var tvDexNumber: TextView
@@ -40,32 +45,31 @@ class PokedexActivity : AppCompatActivity() {
         url = "https://pokeapi.co/api/v2/pokemon/"
         queue = Volley.newRequestQueue(this)
 
-        etPokemonName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(p0: Editable?) {
-                if(etPokemonName.text.isNotEmpty()){
-                    getPokemon(url + etPokemonName.text.toString() + "/")
-                }
+        val button = findViewById<Button>(R.id.btnSearch)
+        button.setOnClickListener{
+            val pokemonName = etPokemonName.text
+            if(pokemonName.isNotEmpty()){
+                getPokemon(url + etPokemonName.text.toString() + "/")
             }
-        })
+        }
     }
 
     private fun getPokemon(url: String){
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null,
             { response ->
+                Log.i("getpoke", "getPokemon: vsf")
                 updatePokemon(response)
             },
-            { error ->
-                Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show()
+            { _ ->
+                Log.i("getpoke", "getPokemon: naumfoi")
             })
 
         this.queue.add(jsonObjectRequest)
     }
 
     private fun updatePokemon(pokemon: JSONObject){
+
         tvPokemonName.text = pokemon.getString("name")
         tvDexNumber.text = "#".plus(pokemon.getInt("id").toString())
         val typesArray = pokemon.getJSONArray("types")
