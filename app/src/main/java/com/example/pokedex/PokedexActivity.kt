@@ -1,14 +1,11 @@
 package com.example.pokedex
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,15 +14,15 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
-import java.util.Objects.isNull
+import coil.load
 
-const val LAST_POKEMON_ID = 1025
 class PokedexActivity : AppCompatActivity() {
 
     private lateinit var tvDexNumber: TextView
     private lateinit var tvTypes: TextView
     private lateinit var tvPokemonName: TextView
     private lateinit var etPokemonName: EditText
+    private lateinit var ivPokemon: ImageView
     private lateinit var url: String
     private lateinit var queue: RequestQueue
 
@@ -42,21 +39,22 @@ class PokedexActivity : AppCompatActivity() {
         tvTypes = findViewById(R.id.tvTypes)
         tvPokemonName = findViewById(R.id.tvPokemonName)
         etPokemonName = findViewById(R.id.etPokemonName)
-        url = "https://pokeapi.co/api/v2/pokemon/"
+        ivPokemon = findViewById(R.id.ivPokemon)
+        url = getString(R.string.apiUrl)
         queue = Volley.newRequestQueue(this)
 
-        val button = findViewById<Button>(R.id.btnSearch)
+        val button = findViewById<ImageButton>(R.id.ibtnSearch)
         button.setOnClickListener{
             val pokemonName = etPokemonName.text
             if(pokemonName.isNotEmpty()){
-                getPokemon(url + etPokemonName.text.toString() + "/")
+                getPokemon(etPokemonName.text.toString())
             }
         }
     }
 
-    private fun getPokemon(url: String){
+    private fun getPokemon(nameOrId: String){
         val jsonObjectRequest = JsonObjectRequest(
-            Request.Method.GET, url, null,
+            Request.Method.GET, this.url+nameOrId, null,
             { response ->
                 Log.i("getpoke", "getPokemon: vsf")
                 updatePokemon(response)
@@ -72,14 +70,26 @@ class PokedexActivity : AppCompatActivity() {
 
         tvPokemonName.text = pokemon.getString("name")
         tvDexNumber.text = "#".plus(pokemon.getInt("id").toString())
+//        val typesArray = pokemon.getJSONArray("types")
+//        val typesStringBuilder = StringBuilder()
+//        var i = 0
+//        while (i < typesArray.length()) {
+//            val typeObject = typesArray.getJSONObject(i)
+//            val typeName = typeObject.getJSONObject("type").getString("name")
+//            typesStringBuilder.append(", $typeName")
+//            i++
+//        }
+//        val types = if (typesStringBuilder.isNotEmpty()) {
+//            typesStringBuilder.delete(0, 2).toString()
+//        } else {
+//            ""
+//        }
         val typesArray = pokemon.getJSONArray("types")
         val typesStringBuilder = StringBuilder()
-        var i = 0
-        while (i < typesArray.length()) {
+        for (i in 0 until typesArray.length()) {
             val typeObject = typesArray.getJSONObject(i)
             val typeName = typeObject.getJSONObject("type").getString("name")
             typesStringBuilder.append(", $typeName")
-            i++
         }
         val types = if (typesStringBuilder.isNotEmpty()) {
             typesStringBuilder.delete(0, 2).toString()
@@ -87,5 +97,10 @@ class PokedexActivity : AppCompatActivity() {
             ""
         }
         tvTypes.text = types
+        ivPokemon.load(pokemon.getJSONObject("sprites").getString("front_default")){
+            crossfade(true)
+            placeholder(R.drawable.ic_launcher_foreground)
+            error(R.drawable.ic_launcher_foreground)
+        }
     }
 }

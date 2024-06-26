@@ -11,7 +11,7 @@
         android:id="@+id/tvBaseLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
         android:text="Pokémon:"
         android:textSize="20sp"
@@ -22,11 +22,11 @@
         android:id="@+id/tvDexNumberLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="128dp"
         android:text="Pokédex:"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/tvBaseLabel"
-        app:layout_constraintTop_toBottomOf="@+id/tvPokemonName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvBaseLabel" />
 
     <TextView
         android:id="@+id/tvTypesLabel"
@@ -35,7 +35,7 @@
         android:layout_marginTop="32dp"
         android:text="Types:"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/tvBaseLabel"
+        app:layout_constraintEnd_toEndOf="@+id/tvDexNumberLabel"
         app:layout_constraintTop_toBottomOf="@+id/tvDexNumberLabel" />
 
     <TextView
@@ -76,17 +76,39 @@
         app:layout_constraintStart_toEndOf="@+id/tvBaseLabel"
         app:layout_constraintTop_toTopOf="@+id/tvBaseLabel" />
 
-    <Button
-        android:id="@+id/btnSearch"
-        android:layout_width="56dp"
-        android:layout_height="48dp"
+<!--    <Button-->
+<!--        android:id="@+id/btnSearch"-->
+<!--        android:layout_width="56dp"-->
+<!--        android:layout_height="48dp"-->
+<!--        android:backgroundTint="@color/red"-->
+<!--        app:icon="@drawable/ic_search"-->
+<!--        app:iconGravity="textTop"-->
+<!--        app:iconSize="48dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/etPokemonName"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/etPokemonName"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/etPokemonName"-->
+<!--        app:layout_constraintVertical_bias="0.0" />-->
+
+    <ImageView
+        android:id="@+id/ivPokemon"
+        android:layout_width="298dp"
+        android:layout_height="282dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTypesLabel"
+        app:srcCompat="@drawable/ic_launcher_foreground" />
+
+    <ImageButton
+        android:id="@+id/ibtnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:backgroundTint="@color/red"
-        app:icon="@drawable/ic_search"
-        app:iconGravity="top"
-        app:iconSize="25dp"
+        android:text="Search"
         app:layout_constraintBottom_toBottomOf="@+id/etPokemonName"
         app:layout_constraintStart_toEndOf="@+id/etPokemonName"
         app:layout_constraintTop_toTopOf="@+id/etPokemonName"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.736"
+        app:srcCompat="@drawable/ic_search" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
